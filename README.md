@@ -5,7 +5,7 @@ AI-powered clinical or hospital diagnostic platform for chest X-ray analysis, de
 ---
 ## Video Demo
 
-[Link to video demo]
+[https://youtu.be/c8o5dzb93hA]
 
 ---
 
@@ -21,7 +21,10 @@ The platform provides:
 - Light and dark mode interface
 
 ---
-## Figma:[https://www.figma.com/design/HrecrIM5HCyFqAQIrBEpVC/UbuzimaConnect?node-id=0-1&t=d4syq9gl3CczrzPo-1]
+## Figma
+
+[https://www.figma.com/design/HrecrIM5HCyFqAQIrBEpVC/UbuzimaConnect?node-id=0-1&t=d4syq9gl3CczrzPo-1]
+
 ## Features
 
 - **Intro Animation** -- Cinematic loading sequence with GSAP animations
