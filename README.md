@@ -194,28 +194,26 @@ Radiologist Dashboard
 ## Screenshots
 
 ### Intro Sequence
-![Intro Sequence](screenshoots/screenshoots/{21329CF5-E639-4465-923B-4CDF4CF32C3B}.png)
+![Intro Sequence](screenshoots/screenshoots/intro.png)
 
 ### Hero Landing Page
-![Hero Page](screenshoots/screenshoots/{2B1DE4DB-E610-40A0-9F9D-C08E28A8170F}.png)
+![Hero Page](screenshoots/screenshoots/Landing_page.png)
 
 ### Authentication Page
-![Auth Page](screenshoots/screenshoots/{300563FA-03C3-4BA0-967D-A4166581DF20}.png)
+![Auth Page](screenshoots/screenshoots/Auth.png)
 
 ### Dashboard Overview
-![Dashboard](screenshoots/screenshoots/{3C634FE0-D2D5-4F7F-947A-987A5FE6A563}.png)
+![Dashboard](screenshoots/screenshoots/Dashboard.png)
 
 ### Diagnostic Station
-![Diagnostic](screenshoots/screenshoots/{653577DA-2B99-4E76-B8FE-30D0E7DB4799}.png)
+![Diagnostic](screenshoots/screenshoots/Diagnostic.png)
 
 ### History Tab
-![History](screenshoots/screenshoots/{78C94A31-CB03-4F34-85F7-DE4B88E38CE4}.png)
+![History](screenshoots/screenshoots/History.png)
 
-### Performance Metrics
-![Performance](screenshoots/screenshoots/{ACBE2532-0930-4885-9ABF-CDF6332A806A}.png)
 
 ### Dark Mode
-![Dark Mode](screenshoots/screenshoots/{B3FF4C56-9FE4-4F9E-9F3C-17A94C05B4FD}.png)
+![Dark Mode](screenshoots/screenshoots/darkmode.png)
 
 > **Note:** Update the screenshot filenames above to match the correct screen after reviewing each image. The current filenames are the raw UUIDs from Windows screenshot tool -- you may want to rename them for clarity (e.g., `intro.png`, `hero.png`, `auth.png`, etc.).
 
