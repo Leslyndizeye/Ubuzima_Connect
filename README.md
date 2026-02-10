@@ -15,7 +15,6 @@ AI-powered clinical diagnostic platform for chest X-ray analysis, designed to de
 - [Screenshots](#screenshots)
 - [System Design (UML Diagrams)](#system-design-uml-diagrams)
 - [ML Model Summary](#ml-model-summary)
-- [Deployment](#deployment)
 - [Video Demo](#video-demo)
 - [Author](#author)
 - [License](#license)
@@ -59,7 +58,7 @@ The platform provides:
 | Authentication   | Firebase Auth (Email/Password + Google OAuth)     |
 | Database         | Firebase Firestore                               |
 | ML Model         | CNN (pre-trained on NIH 112k, fine-tuned on VinDr 18k+) |
-| Deployment       | Vercel                                           |
+
 
 ---
 
@@ -294,7 +293,6 @@ Frontend Sends X-ray -> API Returns Prediction
 
 ---
 
-## Deployment
 
 | Service          | Platform     | Purpose                          |
 |------------------|--------------|----------------------------------|
