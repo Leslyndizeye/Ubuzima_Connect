@@ -3,21 +3,9 @@
 AI-powered clinical diagnostic platform for chest X-ray analysis, designed to detect Tuberculosis (TB) and Pneumonia using locally calibrated deep learning models for Rwandan healthcare facilities.
 
 ---
+## Video Demo
 
-## Table of Contents
-
-- [Description](#description)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Environment Setup](#environment-setup)
-- [Application Flow](#application-flow)
-- [Screenshots](#screenshots)
-- [System Design (UML Diagrams)](#system-design-uml-diagrams)
-- [ML Model Summary](#ml-model-summary)
-- [Video Demo](#video-demo)
-- [Author](#author)
-- [License](#license)
+[Link to video demo]
 
 ---
 
@@ -300,18 +288,3 @@ Frontend Sends X-ray -> API Returns Prediction
 | Authentication   | Firebase     | User auth and session management |
 | Database         | Firestore    | User profiles and diagnosis data |
 | ML Model API     | TBD          | Model inference endpoint         |
-
-### Deploy to Vercel
-
-1. Push your code to GitHub
-2. Go to [vercel.com](https://vercel.com) and import the repository
-3. Vercel will auto-detect the Vite configuration
-4. Click Deploy
-
----
-
-## Video Demo
-
-[Link to video demo]
-
-
