@@ -1,17 +1,17 @@
 # Ubuzima Connect: AI-Powered Clinical Advisory System
 **Student:** Ndizeye Lesly  
-**Course:** Mission Capstone (Software Engineering)  
+**Course:** Mission Capstone 
 **Track:** FullStack & Machine Learning  
 
 ---
 
-## 🎥 Video Demonstration
+##  Video Demonstration
 **[INSERT LINK TO YOUR VIDEO DEMO HERE - e.g., Loom or YouTube]**  
 *(This video demonstrates the UI, the AI inference engine, and the code structure.)*
 
 ---
 
-## 📌 1. Project Description
+##  1. Project Description
 **Ubuzima Connect** is a Clinical Decision Support System (CDSS) designed to address the critical shortage of radiologists in Rwanda (currently only 17 serving 14 million people). 
 
 The system utilizes **Deep Learning (ResNet-50)** to detect Tuberculosis and Pneumonia in Chest X-rays with high sensitivity. Unlike standard "Black Box" AI, Ubuzima Connect features **Grad-CAM Explainability** (Heatmaps) to build clinician trust and integrates directly with the **DHIS2** national health reporting framework to prevent data silos.
