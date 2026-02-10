@@ -1,6 +1,6 @@
 # Ubuzima Connect
 
-AI-powered clinical diagnostic platform for chest X-ray analysis, designed to detect Tuberculosis (TB) and Pneumonia using locally calibrated deep learning models for Rwandan healthcare facilities.
+AI-powered clinical or hospital diagnostic platform for chest X-ray analysis, designed to detect Tuberculosis (TB) and Pneumonia 
 
 ---
 ## Video Demo
