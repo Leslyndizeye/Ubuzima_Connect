@@ -21,7 +21,7 @@ The platform provides:
 - Light and dark mode interface
 
 ---
-
+## figma link :[https://www.figma.com/design/HrecrIM5HCyFqAQIrBEpVC/UbuzimaConnect?node-id=0-1&t=d4syq9gl3CczrzPo-1]
 ## Features
 
 - **Intro Animation** -- Cinematic loading sequence with GSAP animations
