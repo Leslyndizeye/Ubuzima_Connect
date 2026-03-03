@@ -6,13 +6,16 @@ import { gsap } from "gsap";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
-// --- Types ---
+
+// Types 
 type Tab = "overview" | "diagnostic" | "history" | "evaluation" | "settings";
 
 interface UserProfile {
   fullName: string;
   email: string;
   role: string;
+  status?: "pending" | "approved" | "rejected";
+  roleRequested?: string;
 }
 
 interface AnalysisResult {
@@ -103,12 +106,13 @@ const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: "settings", label: "System", icon: <Icons.Settings /> },
 ];
 
-// ========== MAIN DASHBOARD ==========
+//  MAIN DASHBOARD 
 interface DashboardProps {
   onSignOut?: () => void;
+  pendingApproval?: boolean; 
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ onSignOut }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onSignOut, pendingApproval = false }) => {
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [isDark, setIsDark] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -143,12 +147,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onSignOut }) => {
               fullName: data.fullName || user.displayName || "Clinician",
               email: data.email || user.email || "",
               role: data.role || "radiologist",
+              status: data.status,
+              roleRequested: data.roleRequested,
             });
           } else {
             setUserProfile({
               fullName: user.displayName || "Clinician",
               email: user.email || "",
               role: "radiologist",
+              status: "approved",
             });
           }
         } catch {
@@ -156,6 +163,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSignOut }) => {
             fullName: user.displayName || "Clinician",
             email: user.email || "",
             role: "radiologist",
+            status: "approved",
           });
         }
       }
@@ -177,6 +185,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSignOut }) => {
   };
 
   const handleTabSwitch = (tab: Tab) => {
+    if (pendingApproval) return; // block navigation
     setActiveTab(tab);
     setSidebarOpen(false);
   };
@@ -199,6 +208,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSignOut }) => {
 
   return (
     <div className={`flex h-screen overflow-hidden transition-colors duration-500 ${themeClass}`}>
+    {pendingApproval && <PendingModal onLogout={handleSignOut} />}
       {/* Mobile overlay */}
       {sidebarOpen && (
         <button
@@ -287,7 +297,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onSignOut }) => {
               <p className="text-base font-bold tracking-tight capitalize">
                 {activeTab === "evaluation" ? "Performance" : activeTab}
               </p>
-            </div>
+                {pendingApproval && (
+              <div className="mt-2 text-[10px] font-bold uppercase tracking-widest text-amber-500">
+                  Pending admin approval
+                </div>
+              )}
+              </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -1258,5 +1273,23 @@ const ActivityRow = ({ id, name, time, res, stat, isDark }: { id: string; name: 
     </div>
   </div>
 );
+const PendingModal = ({ onLogout }: { onLogout: () => void }) => {
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]">
+      <div className="bg-white rounded-2xl p-8 w-[420px] shadow-2xl text-center">
+        <h2 className="text-xl font-bold mb-3">Request Pending</h2>
+        <p className="text-gray-500 mb-6">
+          Your radiologist access request has been submitted and is waiting for admin approval.
+        </p>
+        <button
+          onClick={onLogout}
+          className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-900 transition"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default Dashboard;

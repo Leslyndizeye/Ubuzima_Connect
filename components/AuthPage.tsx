@@ -9,7 +9,7 @@ import {
   sendPasswordResetEmail, 
   signInWithPopup 
 } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { auth, googleProvider, db } from './firebaseConfig';
 import { gsap } from 'gsap';
 
@@ -78,8 +78,9 @@ const translations = {
     passwordLabel: "Password",
     nameLabel: "Full Name",
     licenseLabel: "RBC License ID",
+    hospitalLabel: "Hospital / Facility",
     forgotPass: "Reset password?",
-    nextStep: "Authorize Access",
+    nextStep: "Submit",
     signupBtn: "Create Free Account",
     identifyBtn: "Register Now",
     googleBtn: "Continue with Google",
@@ -105,6 +106,7 @@ const translations = {
     passwordLabel: "Mot de passe",
     nameLabel: "Nom Complet",
     licenseLabel: "Num\u00e9ro de licence RBC",
+    hospitalLabel: "Hôpital / Établissement",
     forgotPass: "R\u00e9initialiser ?",
     nextStep: "Autoriser l'Acc\u00e8s",
     signupBtn: "Cr\u00e9er un compte gratuit",
@@ -137,6 +139,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onBack, onAuthSuccess, initialEmail
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [licenseId, setLicenseId] = useState('');
+  const [hospital, setHospital] = useState('');
 
   const t = translations[lang];
 
@@ -173,20 +176,58 @@ const AuthPage: React.FC<AuthPageProps> = ({ onBack, onAuthSuccess, initialEmail
       } else if (view === 'signup') {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: fullName });
-        await setDoc(doc(db, 'users', userCredential.user.uid), {
-          role: role || 'gp',
+
+        const chosenRole = role || "gp";
+
+
+        if (chosenRole === "radiologist") {
+          if (!fullName.trim() || !licenseId.trim() || !hospital.trim()) {
+            setError("Full name, hospital, and RBC license ID are required for radiologists.");
+            setLoading(false);
+            return;
+          }
+        }
+
+        const baseProfile = {
           fullName,
           email,
-          licenseId,
           createdAt: serverTimestamp(),
-          setupComplete: true,
+          lastSeen: serverTimestamp(),
           freeTier: true,
-          registeredYear: 2026
-        });
+          registeredYear: 2026,
+        };
+
+        if (chosenRole === "radiologist") {
+
+          await setDoc(
+            doc(db, "users", userCredential.user.uid),
+            {
+              ...baseProfile,
+              roleRequested: "radiologist",
+              status: "pending",
+              licenseId,
+              hospital,
+            },
+            { merge: true }
+          );
+        } else {
+
+          await setDoc(
+            doc(db, "users", userCredential.user.uid),
+            {
+              ...baseProfile,
+              role: chosenRole,
+              status: "approved",
+            },
+            { merge: true }
+          );
+        }
+
         await sendEmailVerification(userCredential.user);
         onAuthSuccess?.(userCredential.user);
         return;
-      } else if (view === 'forgot') {
+      }
+       else if (view === 'forgot') {
         await sendPasswordResetEmail(auth, email);
         setSuccess(t.resetSuccess);
       }
@@ -212,35 +253,60 @@ const AuthPage: React.FC<AuthPageProps> = ({ onBack, onAuthSuccess, initialEmail
     }
   };
 
-  const handleGoogleAuth = async () => {
-    setLoading(true);
-    setError('');
-    setSuccess('');
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const userDocRef = doc(db, 'users', result.user.uid);
-      await setDoc(userDocRef, {
-        role: 'gp',
-        fullName: result.user.displayName,
-        email: result.user.email,
-        lastSeen: serverTimestamp(),
-        freeTier: true,
-        registeredYear: 2026
-      }, { merge: true });
-      onAuthSuccess?.(result.user);
-    } catch (err: any) {
-      const code = err.code || '';
-      if (code === 'auth/popup-closed-by-user') {
-        setError('Sign-in popup was closed. Try again.');
-      } else if (code === 'auth/popup-blocked') {
-        setError('Popup blocked by browser. Allow popups and retry.');
-      } else {
-        setError(err.message || 'Google sign-in failed.');
-      }
-    } finally {
-      setLoading(false);
+const handleGoogleAuth = async () => {
+  setLoading(true);
+  setError('');
+  setSuccess('');
+
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const userDocRef = doc(db, "users", result.user.uid);
+
+    const existing = await getDoc(userDocRef);
+
+    if (existing.exists()) {
+      // keep role/status, only update lastSeen + basic profile info
+      await setDoc(
+        userDocRef,
+        {
+          lastSeen: serverTimestamp(),
+          fullName: result.user.displayName ?? existing.data().fullName ?? null,
+          email: result.user.email ?? existing.data().email ?? null,
+        },
+        { merge: true }
+      );
+    } else {
+      // new google users default to GP sandbox (approved)
+      await setDoc(
+        userDocRef,
+        {
+          role: "gp",
+          status: "approved",
+          fullName: result.user.displayName ?? null,
+          email: result.user.email ?? null,
+          createdAt: serverTimestamp(),
+          lastSeen: serverTimestamp(),
+          freeTier: true,
+          registeredYear: 2026,
+        },
+        { merge: true }
+      );
     }
-  };
+
+    onAuthSuccess?.(result.user);
+  } catch (err: any) {
+    const code = err.code || '';
+    if (code === 'auth/popup-closed-by-user') {
+      setError('Sign-in popup was closed. Try again.');
+    } else if (code === 'auth/popup-blocked') {
+      setError('Popup blocked by browser. Allow popups and retry.');
+    } else {
+      setError(err.message || 'Google sign-in failed.');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen w-full bg-white flex flex-col lg:flex-row overflow-hidden font-sans">
@@ -325,6 +391,15 @@ const AuthPage: React.FC<AuthPageProps> = ({ onBack, onAuthSuccess, initialEmail
                     <button type="button" onClick={() => switchView('role')} className="text-[9px] font-bold text-emerald-600 hover:underline uppercase tracking-widest">{t.backToRoles}</button>
                   </div>
                   <InputField label={t.nameLabel} type="text" value={fullName} onChange={setFullName} placeholder="Dr. Gasana Jean" />
+                  {role === "radiologist" && (
+                    <InputField
+                      label={t.hospitalLabel}
+                      type="text"
+                      value={hospital}
+                      onChange={setHospital}
+                      placeholder="CHUK / King Faisal / ..."
+                    />
+                  )}
                   <InputField label={t.licenseLabel} type="text" value={licenseId} onChange={setLicenseId} placeholder="MC/2026/0123" />
                 </div>
               )}
