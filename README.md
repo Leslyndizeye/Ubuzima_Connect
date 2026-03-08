@@ -114,36 +114,20 @@ cd ubuzima-connect
 
 ```bash
 npm install
-```
 
-3. **Configure Firebase**
-
-Open `firebaseconfig.ts` and ensure your Firebase project credentials are set:
-
-```typescript
-const firebaseConfig = {
-  apiKey: "your_api_key",
-  authDomain: "your_project.firebaseapp.com",
-  projectId: "your_project_id",
-  storageBucket: "your_project.firebasestorage.app",
-  messagingSenderId: "your_sender_id",
-  appId: "your_app_id"
-};
-```
-
-4. **Enable Firebase services**
+3. **Enable Firebase services**
 
 In the Firebase Console:
 - Go to Authentication > Sign-in method > Enable Email/Password and Google
 - Go to Firestore Database > Create database in production mode
 
-5. **Run the development server**
+4. **Run the development server**
 
 ```bash
 npm run dev
 ```
 
-6. **Open the application**
+5. **Open the application**
 
 Navigate to `http://localhost:5173` in your browser.
 
